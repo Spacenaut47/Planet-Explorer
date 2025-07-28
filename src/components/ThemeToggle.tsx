@@ -1,16 +1,24 @@
+import { motion } from 'framer-motion'
 import { useTheme } from '../hooks/useTheme'
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <button
+    <motion.button
       onClick={toggleTheme}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
       title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-      className="text-xl p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+      className="relative p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xl hover:bg-white/20 transition-all duration-200 ml-2"
     >
-      {theme === 'light' ? '🌙' : '☀️'}
-    </button>
+      <motion.div
+        animate={{ rotate: theme === 'dark' ? 180 : 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {theme === 'light' ? '🌙' : '☀️'}
+      </motion.div>
+    </motion.button>
   )
 }
 
