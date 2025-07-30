@@ -14,15 +14,15 @@ function PictureOfTheDay() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   useEffect(() => {
     const loadAPOD = async () => {
       try {
         setLoading(true);
         setError(null);
-        const apod = await fetchAPOD();
+        const apod = await fetchAPOD(selectedDate || undefined); // use date if selected
 
-        // Handle both image and video content
         const apodData: APODData = {
           id: apod.date,
           title: apod.title,
@@ -45,7 +45,7 @@ function PictureOfTheDay() {
     };
 
     loadAPOD();
-  }, []);
+  }, [selectedDate]);
 
   if (loading) {
     return (
@@ -107,6 +107,23 @@ function PictureOfTheDay() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-teal-900 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 p-6">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="max-w-4xl mx-auto mb-6"
+      >
+        <label className="block text-white font-semibold mb-2">
+          📅 Choose a date:
+        </label>
+        <input
+          type="date"
+          max={new Date().toISOString().split("T")[0]}
+          value={selectedDate ?? ""}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="bg-white/10 border border-white/30 rounded-xl p-2 text-white backdrop-blur-md focus:outline-none"
+        />
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

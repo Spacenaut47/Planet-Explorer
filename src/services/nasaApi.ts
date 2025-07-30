@@ -3,20 +3,28 @@ import { type APODResponse, type NASAItem } from '../types/nasa'
 
 const API_KEY = import.meta.env.VITE_NASA_API_KEY || 'DEMO_KEY'
 
-export const fetchAPOD = async (): Promise<APODResponse> => {
+export const fetchAPOD = async (date?: string): Promise<APODResponse> => {
   try {
-    const res = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
+    const url = new URL('https://api.nasa.gov/planetary/apod')
+    url.searchParams.append('api_key', API_KEY)
+    if (date) {
+      url.searchParams.append('date', date)
+    }
+
+    const res = await fetch(url.toString())
     if (!res.ok) {
       throw new Error(`Failed to fetch APOD: ${res.status} ${res.statusText}`)
     }
+
     const data = await res.json()
-    console.log('APOD data received:', data) // Debug log
+    console.log('APOD data received:', data)
     return data
   } catch (error) {
     console.error('APOD fetch error:', error)
     throw error
   }
 }
+
 
 export const searchNASAImages = async (query: string): Promise<FavoriteItem[]> => {
   try {
